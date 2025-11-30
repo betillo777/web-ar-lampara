@@ -99,6 +99,7 @@ function onWindowResize() {
     composer.setSize( window.innerWidth, window.innerHeight ); // Redimensionar el compositor
 }
 
+
 function loadModels() {
     const loader = new THREE.GLTFLoader();
     const modelScale = 0.3; // Escala inicial, puedes ajustarla
@@ -107,11 +108,12 @@ function loadModels() {
     loader.load( 'assets/lampara-apagada.glb', function ( gltf ) {
         modelApagada = gltf.scene;
         modelApagada.scale.set( modelScale, modelScale, modelScale );
-        modelApagada.visible = true; // Empieza visible (pero no colocada)
+        modelApagada.visible = true;
         scene.add( modelApagada );
         
-        // Inicialmente, colocamos el modelo apagado y lo movemos fuera de vista
-        modelApagada.position.set( 1000, 1000, 1000 ); 
+        // CORRECCIÓN: Colocar el modelo apagado a 3 metros en Z para que sea visible
+        modelApagada.position.set( 0, -0.5, -3 ); 
+        
     }, undefined, function ( error ) {
         console.error( 'Error cargando lampara-apagada.glb:', error );
     } );
@@ -123,12 +125,13 @@ function loadModels() {
         modelEncendida.visible = false; // Empieza oculta
         scene.add( modelEncendida );
 
-        // Inicialmente, movemos el modelo encendido fuera de vista
-        modelEncendida.position.set( 1000, 1000, 1000 );
+        // CORRECCIÓN: Colocar el modelo encendido a 3 metros en Z para que sea visible (pero oculto)
+        modelEncendida.position.set( 0, -0.5, -3 );
     }, undefined, function ( error ) {
         console.error( 'Error cargando lampara-encendida.glb:', error );
     } );
 }
+
 
 function setupPostProcessing() {
     // 1. Crear el Compositor (para aplicar efectos)
