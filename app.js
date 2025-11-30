@@ -24,7 +24,15 @@ const switchButton = document.getElementById('switch-button');
 // 2. INICIALIZACIÓN DE LA ESCENA Y RA
 // =========================================================
 
-init();
+
+// =========================================================
+// INICIAR EL PROYECTO
+// =========================================================
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    init();
+});
+
 
 function init() {
     container = document.createElement( 'div' );
@@ -40,7 +48,9 @@ function init() {
     renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.outputEncoding = THREE.sRGBEncoding;
+   
+
+
     // CRUCIAL: Habilitar WebXR
     renderer.xr.enabled = true; 
     
