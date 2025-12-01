@@ -6,16 +6,17 @@
     <title>Tienda de Lámparas WebAR</title>
     <!-- Carga de Tailwind CSS CDN (solo para desarrollo) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Import Map para Módulos ES6 y Three.js Addons -->
+    
+    <!-- Import Map CORREGIDO: Ahora apunta a CDNs para asegurar que los archivos carguen. -->
     <script type="importmap">
         {
             "imports": {
-                "three": "./js/three.module.js",
-                "three/addons/loaders/GLTFLoader.js": "./js/GLTFLoader.js",
-                "three/addons/webxr/ARButton.js": "./js/ARButton.js",
-                "three/addons/postprocessing/EffectComposer.js": "./js/EffectComposer.js",
-                "three/addons/postprocessing/RenderPass.js": "./js/RenderPass.js",
-                "three/addons/postprocessing/UnrealBloomPass.js": "./js/UnrealBloomPass.js"
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/loaders/GLTFLoader.js": "https://raw.githack.com/mrdoob/three.js/r158/examples/jsm/loaders/GLTFLoader.js",
+                "three/addons/webxr/ARButton.js": "https://raw.githack.com/mrdoob/three.js/r158/examples/jsm/webxr/ARButton.js",
+                "three/addons/postprocessing/EffectComposer.js": "https://raw.githack.com/mrdoob/three.js/r158/examples/jsm/postprocessing/EffectComposer.js",
+                "three/addons/postprocessing/RenderPass.js": "https://raw.githack.com/mrdoob/three.js/r158/examples/jsm/postprocessing/RenderPass.js",
+                "three/addons/postprocessing/UnrealBloomPass.js": "https://raw.githack.com/mrdoob/three.js/r158/examples/jsm/postprocessing/UnrealBloomPass.js"
             }
         }
     </script>
