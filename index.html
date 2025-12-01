@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Lámparas WebAR</title>
+    <title>Tienda de Lámparas WebAR (Módulos)</title>
     <style>
         /* Estilos básicos para que el canvas de 3D ocupe toda la pantalla */
         body { margin: 0; overflow: hidden; }
@@ -22,7 +22,7 @@
         /* Estilos para el botón de Encendido/Apagado (Mobile First) */
         #switch-button {
             position: absolute;
-            top: 20px; /* Colócalo arriba para que no estorbe al botón de AR */
+            top: 20px; 
             left: 50%;
             transform: translateX(-50%);
             padding: 15px 30px;
@@ -32,7 +32,13 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            z-index: 101; /* Asegura que esté encima de todo */
+            z-index: 101;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        #switch-button:hover {
+            background-color: #555;
         }
     </style>
 </head>
@@ -42,19 +48,24 @@
     
     <div id="ar-button-container"></div>
     
-<script src="https://unpkg.com/three@0.166.1/build/three.min.js"></script>
+    <!-- 
+        *** IMPORT MAP: SOLUCIÓN DE MÓDULOS ***
+        Define las rutas de las librerías para que app.js pueda usar 'import'.
+    -->
+    <script type="importmap">
+    {
+        "imports": {
+            <!-- Ruta para el núcleo de Three.js (versión modular) -->
+            "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
+            
+            <!-- Ruta para todos los addons de Three.js (GLTFLoader, ARButton, etc.) -->
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
+        }
+    }
+    </script>
 
-<script src="js/GLTFLoader.js" type="module"></script>
-<script src="js/ARButton.js" type="module"></script>
- 
-<script src="js/postprocessing/EffectComposer.js" type="module"></script>
-<script src="js/postprocessing/RenderPass.js" type="module"></script>
-<script src="js/postprocessing/ShaderPass.js" type="module"></script>
-<script src="js/shaders/CopyShader.js" type="module"></script> 
-<script src="js/postprocessing/UnrealBloomPass.js" type="module"></script>
-
-<script src="app.js" type="module" defer></script>
-
+    <!-- Carga del script principal como MÓDULO -->
+    <script src="app.js" type="module" defer></script>
 
 </body>
 </html>

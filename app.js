@@ -1,5 +1,18 @@
 // =========================================================
-// 1. VARIABLES GLOBALES
+// 1. IMPORTACIONES DE ES MODULES (AÑADIDAS PARA FUNCIONAR CON Import Map)
+// =========================================================
+import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { ARButton } from 'three/addons/webxr/ARButton.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { CopyShader } from 'three/addons/shaders/CopyShader.js'; 
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+
+// =========================================================
+// 2. VARIABLES GLOBALES
 // =========================================================
 let container;
 let camera, scene, renderer;
@@ -21,7 +34,7 @@ const switchButton = document.getElementById('switch-button');
 
 
 // =========================================================
-// 2. INICIALIZACIÓN DE LA ESCENA Y RA
+// 3. INICIALIZACIÓN DE LA ESCENA Y RA
 // =========================================================
 
 
@@ -29,6 +42,7 @@ const switchButton = document.getElementById('switch-button');
 // INICIAR EL PROYECTO
 // =========================================================
 
+// Usamos DOMContentLoaded para asegurar que el DOM esté listo antes de inicializar
 document.addEventListener('DOMContentLoaded', (event) => {
     init();
 });
@@ -48,8 +62,7 @@ function init() {
     renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-   
-
+    
 
     // CRUCIAL: Habilitar WebXR
     renderer.xr.enabled = true; 
@@ -77,9 +90,9 @@ function init() {
     scene.add( reticle );
 
     // --- BOTÓN DE RA ---
-    // El ARButton se encarga de solicitar la sesión de RA al navegador.
+    // Usamos el ARButton importado.
     document.body.appendChild( 
-        THREE.ARButton.createButton( renderer, { 
+        ARButton.createButton( renderer, { 
             requiredFeatures: [ 'hit-test', 'local' ], // Necesitamos hit-test para colocar la lámpara
             optionalFeatures: [ 'dom-overlay' ] // Para que el botón de HTML (switch-button) se vea bien
         } ) 
@@ -88,7 +101,9 @@ function init() {
     // --- LISTENERS ---
     window.addEventListener( 'resize', onWindowResize );
     // Listener para el botón de Encendido/Apagado
-    switchButton.addEventListener('click', toggleLight);
+    if (switchButton) {
+        switchButton.addEventListener('click', toggleLight);
+    }
     
     // Listener para la interacción con la RA (tocar la pantalla)
     renderer.domElement.addEventListener( 'touchstart', onTouch, false );
@@ -99,19 +114,23 @@ function init() {
 
 
 // =========================================================
-// 3. FUNCIONES DE UTILIDAD
+// 4. FUNCIONES DE UTILIDAD
 // =========================================================
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
-    composer.setSize( window.innerWidth, window.innerHeight ); // Redimensionar el compositor
+    // Verificamos si composer existe antes de redimensionar
+    if (composer) { 
+        composer.setSize( window.innerWidth, window.innerHeight ); // Redimensionar el compositor
+    }
 }
 
 
 function loadModels() {
-    const loader = new THREE.GLTFLoader();
+    // Usamos el GLTFLoader importado
+    const loader = new GLTFLoader();
     const modelScale = 0.3; // Escala inicial, puedes ajustarla
     
     // Cargar la versión apagada
@@ -121,7 +140,7 @@ function loadModels() {
         modelApagada.visible = true;
         scene.add( modelApagada );
         
-        // CORRECCIÓN: Colocar el modelo apagado a 3 metros en Z para que sea visible
+        // Colocar el modelo apagado a 3 metros en Z para que sea visible en modo 3D estándar
         modelApagada.position.set( 0, -0.5, -3 ); 
         
     }, undefined, function ( error ) {
@@ -135,7 +154,7 @@ function loadModels() {
         modelEncendida.visible = false; // Empieza oculta
         scene.add( modelEncendida );
 
-        // CORRECCIÓN: Colocar el modelo encendido a 3 metros en Z para que sea visible (pero oculto)
+        // Colocar el modelo encendido a 3 metros en Z para que sea visible (pero oculto)
         modelEncendida.position.set( 0, -0.5, -3 );
     }, undefined, function ( error ) {
         console.error( 'Error cargando lampara-encendida.glb:', error );
@@ -144,16 +163,15 @@ function loadModels() {
 
 
 function setupPostProcessing() {
-    // 1. Crear el Compositor (para aplicar efectos)
-    composer = new THREE.EffectComposer( renderer );
+    // Usamos EffectComposer importado
+    composer = new EffectComposer( renderer );
     
-    // 2. RenderPass: Dibuja la escena normalmente
-    const renderPass = new THREE.RenderPass( scene, camera );
+    // Usamos RenderPass importado
+    const renderPass = new RenderPass( scene, camera );
     composer.addPass( renderPass );
 
-    // 3. UnrealBloomPass: Aplica el efecto Bloom (brillo)
-    // Tweak estos valores para el look que deseas:
-    bloomPass = new THREE.UnrealBloomPass( 
+    // Usamos UnrealBloomPass importado
+    bloomPass = new UnrealBloomPass( 
         new THREE.Vector2( window.innerWidth, window.innerHeight ), 
         1.5, // strength (Intensidad del brillo)
         0.4, // radius (Tamaño del brillo)
@@ -162,13 +180,13 @@ function setupPostProcessing() {
     composer.addPass( bloomPass );
     bloomPass.enabled = false; // La lámpara comienza apagada, sin Bloom.
 
-    // 4. OutputPass: Asegura que el resultado final se dibuje en la pantalla
-    const outputPass = new THREE.ShaderPass( THREE.CopyShader );
+    // Usamos ShaderPass y CopyShader importados
+    const outputPass = new ShaderPass( CopyShader );
     composer.addPass( outputPass );
 }
 
 function toggleLight() {
-    if (modelApagada && modelEncendida && bloomPass) {
+    if (modelApagada && modelEncendida && bloomPass && switchButton) {
         isLightOn = !isLightOn;
 
         if (isLightOn) {
@@ -177,25 +195,27 @@ function toggleLight() {
             modelEncendida.visible = true;
             bloomPass.enabled = true; // Activa el efecto Bloom
             switchButton.textContent = 'APAGAR LÁMPARA';
+            switchButton.style.backgroundColor = '#FFD700'; // Estilo de encendido
+            switchButton.style.color = '#333';
         } else {
             // APAGAR
             modelApagada.visible = true;
             modelEncendida.visible = false;
             bloomPass.enabled = false; // Desactiva el efecto Bloom
             switchButton.textContent = 'ENCENDER LÁMPARA';
+            switchButton.style.backgroundColor = '#333'; // Estilo de apagado
+            switchButton.style.color = 'white';
         }
     }
 }
 
 
 // =========================================================
-// 4. BUCLE DE ANIMACIÓN Y RENDERIZADO (El "motor" principal)
+// 5. BUCLE DE ANIMACIÓN Y RENDERIZADO (El "motor" principal)
 // =========================================================
 
 function animate( timestamp, frame ) {
     
-    // Solo renderizamos si Three.js está manejando el bucle (que es el caso con setAnimationLoop)
-
     // Lógica para el modo RA (dentro de un frame válido de WebXR)
     if ( frame ) {
         
@@ -205,7 +225,9 @@ function animate( timestamp, frame ) {
         // 2. Inicializar la prueba de detección de superficie (Hit-Test)
         if ( hitTestSourceInitialized === false ) {
             if ( session ) {
+                // Solicitamos el espacio de referencia para el visor
                 session.requestReferenceSpace( 'viewer' ).then( ( referenceSpace ) => {
+                    // Solicitamos el Hit Test
                     session.requestHitTestSource( { space: referenceSpace } ).then( ( source ) => {
                         hitTestSource = source;
                         hitTestSourceInitialized = true;
@@ -233,42 +255,36 @@ function animate( timestamp, frame ) {
     }
     
     // 4. Renderizar (Usamos el compositor para aplicar el Bloom)
-    // El Compositor siempre usa la cámara y escena.
-    // En modo RA, el renderer usa la vista de la cámara de RA.
-    // Aunque estemos en RA, usamos el compositor para aplicar el Bloom si la luz está encendida.
-    composer.render();
+    if (composer) {
+        composer.render();
+    } else {
+        renderer.render( scene, camera ); // Renderizado de respaldo si composer no está listo
+    }
 }
 
 
 // =========================================================
-// 5. LÓGICA DE COLOCACIÓN (Al tocar la pantalla)
+// 6. LÓGICA DE COLOCACIÓN (Al tocar la pantalla)
 // =========================================================
 
 function onTouch( event ) {
+    // Si la retícula es visible, significa que hemos detectado una superficie válida.
     if ( event.touches.length > 0 && reticle.visible ) {
+        
         // Obtenemos la sesión de RA
         const session = renderer.xr.getSession();
         
         if ( session ) {
-            // 1. Creamos el punto de colocación basado en la posición de la retícula
-            const pose = reticle.matrix.elements;
-
-            // 2. Colocamos el modelo (el que esté visible) en esa posición
+            
+            // 1. Colocamos el modelo (el que esté visible) en la posición de la retícula
             // Mueve ambos modelos al mismo lugar (solo uno es visible)
-            if ( modelApagada ) {
+            if ( modelApagada && modelEncendida ) {
                  modelApagada.position.setFromMatrixPosition( reticle.matrix );
                  modelEncendida.position.setFromMatrixPosition( reticle.matrix );
             }
             
-            // 3. Ocultamos la retícula (opcional, pero ayuda a la experiencia)
+            // 2. Ocultamos la retícula
             reticle.visible = false;
-
-            // Una vez colocado, podemos deshabilitar el hit test para ahorrar recursos (opcional)
-            // if ( hitTestSource ) {
-            //     hitTestSource.stop();
-            //     hitTestSource = null;
-            // }
-
         }
     }
 }
