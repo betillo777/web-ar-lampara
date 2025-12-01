@@ -3,66 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Lámparas WebAR (Módulos)</title>
+    <title>WebAR Lámpara 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos básicos para que el canvas de 3D ocupe toda la pantalla */
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
-        
-        /* Contenedor para el botón de WebXR (ARButton.js lo crea aquí) */
-        #ar-button-container {
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            z-index: 100;
+        body {
+            margin: 0;
+            overflow: hidden; /* Evita barras de desplazamiento */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000; /* Fondo negro para el modo escritorio */
+            font-family: 'Inter', sans-serif;
         }
-
-        /* Estilos para el botón de Encendido/Apagado (Mobile First) */
-        #switch-button {
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        #ui-controls {
             position: absolute;
-            top: 20px; 
+            top: 20px;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+        .control-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #switch-button {
+            background-color: #fcd34d; /* Amarillo suave */
+            color: #1f2937; /* Gris oscuro */
+        }
+        #switch-button:hover {
+            background-color: #f59e0b;
+        }
+        
+        /* Contenedor del Botón AR/VR (importante para el fix de seguridad) */
+        #ar-button-container {
+            position: absolute;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 101;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            z-index: 10;
         }
-
-        #switch-button:hover {
-            background-color: #555;
+        
+        /* Estilos específicos para el botón AR creado por Three.js */
+        #ar-button-container button {
+            background-color: #3b82f6; /* Azul */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #ar-button-container button.xr-unsupported {
+            background-color: #ef4444 !important; /* Rojo si no es compatible */
+            cursor: not-allowed;
         }
     </style>
+    <!-- Módulos de Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
+            }
+        }
+    </script>
 </head>
 <body>
-    
-    <button id="switch-button">Encender Lámpara</button>
-    
-    <div id="ar-button-container"></div>
-    
-    <!-- 
-        IMPORT MAP: Define las rutas de las librerías. 
-        Este bloque DEBE ser JSON válido (sin comentarios dentro de las llaves {}).
-    -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
-        }
-    }
-    </script>
+    <div id="ui-controls">
+        <button id="switch-button" class="control-button">Apagar Lámpara</button>
+    </div>
 
-    <!-- Carga del script principal como MÓDULO -->
-    <script src="app.js" type="module" defer></script>
+    <div id="ar-button-container">
+        <!-- El botón AR se insertará aquí mediante app.js -->
+    </div>
 
+    <script type="module" src="app.js"></script>
 </body>
 </html>

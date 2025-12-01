@@ -6,13 +6,19 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-// Variables globales
+// Variables globales para 3D
 let camera, scene, renderer, composer;
 let lightSource, spotLight;
 let isLampOn = true;
-let currentLampModel = null;
 let lampOnModel = null;
 let lampOffModel = null;
+let placedLampModel = null; // El modelo que se coloca en el mundo AR
+
+// Variables específicas de AR (WebXR)
+let controller;
+let reticle;
+let hitTestSource = null;
+let hitTestSourceRequested = false;
 
 // Archivos de modelos 3D
 const MODEL_PATH_OFF = 'assets/lampara-apagada.glb';
@@ -20,47 +26,54 @@ const MODEL_PATH_ON = 'assets/lampara-encendida.glb';
 
 // --- Funciones de Utilidad para manejo de modelos ---
 
-/** Clona el modelo 3D y lo añade a la escena, manejando el estado de encendido/apagado. */
-function switchLampModel(turnOn) {
-    if (currentLampModel) {
-        scene.remove(currentLampModel);
-    }
-
+/**
+ * Clona el modelo 3D y lo prepara para la colocación.
+ */
+function getLampModel(turnOn) {
+    let model;
     if (turnOn) {
-        // Usar .clone() asegura que no modificamos el original
-        currentLampModel = lampOnModel.clone();
-        document.getElementById('switch-button').textContent = "Apagar Lámpara";
-        spotLight.intensity = 1.0; // Enciende la luz
-        composer.passes[1].enabled = true; // Habilita Bloom
+        model = lampOnModel.clone();
     } else {
-        currentLampModel = lampOffModel.clone();
-        document.getElementById('switch-button').textContent = "Encender Lámpara";
-        spotLight.intensity = 0.0; // Apaga la luz
-        composer.passes[1].enabled = false; // Deshabilita Bloom
+        model = lampOffModel.clone();
     }
 
-    // Importante: Añadir el modelo CLONADO a la escena
-    if (currentLampModel) {
-        // AJUSTE DE POSICIÓN Y ESCALA: Bajamos y alejamos para que la lámpara se vea bien centrada.
-        currentLampModel.position.set(0, -0.5, -3); 
-        currentLampModel.scale.set(0.2, 0.2, 0.2); // Escala ajustada para una mejor visualización inicial
-        scene.add(currentLampModel);
-    }
-
-    isLampOn = turnOn;
+    // Aseguramos que la luz se apaga/enciende con el modelo
+    spotLight.intensity = turnOn ? 1.0 : 0.0;
+    composer.passes[1].enabled = turnOn;
+    
+    // El modelo se escala para que esté cerca de las dimensiones reales de Three.js
+    // Si la lámpara es de tamaño real, 0.2 es una escala de 20cm, si es muy grande, ajústala
+    model.scale.set(0.2, 0.2, 0.2); 
+    
+    // Aplicamos la rotación de corrección de eje inmediatamente
+    // Esto debería corregir el problema de ver el interior (giro de -90 grados en X)
+    model.rotation.x = -Math.PI / 2;
+    
+    return model;
 }
 
 function toggleLight() {
-    switchLampModel(!isLampOn);
+    isLampOn = !isLampOn;
+    
+    // Si la lámpara ya ha sido colocada en el modo AR, la reemplazamos (simulando encendido/apagado)
+    if (placedLampModel && placedLampModel.parent) {
+        const parent = placedLampModel.parent;
+        parent.remove(placedLampModel);
+        
+        placedLampModel = getLampModel(isLampOn);
+        parent.add(placedLampModel);
+    }
+    
+    document.getElementById('switch-button').textContent = isLampOn ? "Apagar Lámpara" : "Encender Lámpara";
 }
-
 
 // --- Inicialización y Configuración ---
 
 function init() {
     // 1. Configuración de la Escena y Renderizador
     scene = new THREE.Scene();
-    // AJUSTE DE CÁMARA: Alejamos la cámara a posición (0, 0, 5) para ver la lámpara completa
+    
+    // Cámara para el modo 3D normal (sin AR)
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
     camera.position.set(0, 0, 5); 
 
@@ -71,22 +84,23 @@ function init() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     document.body.appendChild(renderer.domElement);
-
+    
+    // El fondo debe ser transparente para que se vea la cámara en AR
+    renderer.setClearColor(0x000000, 0); 
+    
     // 2. Iluminación (SpotLight)
-    spotLight = new THREE.SpotLight(0xfff5cc, 1.0); // Luz suavemente amarilla
+    spotLight = new THREE.SpotLight(0xfff5cc, 1.0); 
     spotLight.angle = Math.PI / 4;
     spotLight.penumbra = 0.5;
     spotLight.decay = 2;
     spotLight.distance = 200;
     spotLight.position.set(0, 5, 0);
 
-    // Light target is important for SpotLight direction
     spotLight.target.position.set(0, 0, 0);
     scene.add(spotLight);
     scene.add(spotLight.target);
 
-    // AJUSTE DE LUZ AMBIENTAL: Aumentamos la intensidad a 2.0 para que se vea la geometría
-    // y los materiales, incluso cuando la luz principal esté apagada.
+    // Luz ambiental (importante para que la geometría sea visible)
     lightSource = new THREE.AmbientLight(0xffffff, 2.0); 
     scene.add(lightSource);
 
@@ -101,24 +115,51 @@ function init() {
         0.85 // Umbral (Threshold)
     );
     composer.addPass(bloomPass);
+    composer.passes[1].enabled = isLampOn; // Habilitar/Deshabilitar según el estado inicial
 
-    // Inicialmente, apagamos el Bloom si la lámpara empieza apagada
-    if (!isLampOn) {
-        spotLight.intensity = 0.0;
-        bloomPass.enabled = false;
-    }
-
-
-    // 4. Cargar Modelos 3D
-    loadModels();
-
-    // 5. Configurar Botones y Controles
-    document.getElementById('switch-button').addEventListener('click', toggleLight);
-    
-    // FIX DE SEGURIDAD RA: Añadir el botón AR directamente al contenedor predefinido 
-    // en lugar de al body, para evitar el conflicto de superposición de Android/iOS.
+    // 4. Configuración WebXR (Realidad Aumentada)
+    // El botón AR se crea en el contenedor predefinido para evitar conflictos de seguridad
     const arButton = ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] });
     document.getElementById('ar-button-container').appendChild(arButton);
+    
+    // Controlador de la sesión AR (para detectar taps y rotación/movimiento futuros)
+    controller = renderer.xr.getController(0);
+    controller.addEventListener('select', onSelect);
+    scene.add(controller);
+
+    // Retículo (el anillo guía que se mueve sobre la superficie)
+    reticle = new THREE.Mesh(
+        new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial()
+    );
+    reticle.matrixAutoUpdate = false;
+    reticle.visible = false;
+    scene.add(reticle);
+
+    // 5. Cargar Modelos 3D
+    loadModels();
+
+    // 6. Configurar Botones y Controles
+    document.getElementById('switch-button').addEventListener('click', toggleLight);
+    
+    // Inicialización del modelo 3D normal
+    renderer.xr.addEventListener('sessionend', function() {
+        // Al salir de AR, mostramos la lámpara en modo 3D normal
+        if (!placedLampModel) {
+            placedLampModel = getLampModel(isLampOn);
+        }
+        placedLampModel.position.set(0, -0.5, -3);
+        scene.add(placedLampModel);
+    });
+    
+    renderer.xr.addEventListener('sessionstart', function() {
+        // Al entrar en AR, removemos el modelo del modo 3D normal
+        if (placedLampModel) {
+            scene.remove(placedLampModel);
+            placedLampModel = null;
+        }
+    });
+
 
     window.addEventListener('resize', onWindowResize);
 }
@@ -131,34 +172,55 @@ function loadModels() {
     loader.load(
         MODEL_PATH_ON, 
         function (gltf) {
-            // Guardamos la escena completa del GLTF
             lampOnModel = gltf.scene; 
-            console.log("Modelo 'Encendida' cargado correctamente.");
-
+            // CORRECCIÓN CLAVE: Aplicamos la rotación de -90 grados (-Math.PI / 2) en el eje X
+            lampOnModel.rotation.x = -Math.PI / 2;
+            
             // Cargar modelo APAGADO después de que el primero termine
             loader.load(
                 MODEL_PATH_OFF, 
                 function (gltf) {
-                    // Guardamos la escena completa del GLTF
                     lampOffModel = gltf.scene;
-                    console.log("Modelo 'Apagada' cargado correctamente.");
+                    // CORRECCIÓN CLAVE: Aplicamos la rotación de -90 grados (-Math.PI / 2) en el eje X.
+                    lampOffModel.rotation.x = -Math.PI / 2;
 
-                    // Una vez que ambos modelos están cargados, inicializar la escena
-                    switchLampModel(isLampOn);
-
+                    // Después de cargar, mostrar el modelo en modo 3D normal (solo al inicio)
+                    placedLampModel = getLampModel(isLampOn);
+                    placedLampModel.position.set(0, -0.5, -3); // Posición inicial
+                    scene.add(placedLampModel);
                 }, 
-                undefined, // Función de progreso (opcional)
+                undefined, 
                 function (error) {
                     console.error('Error cargando lampara-apagada.glb:', error);
                 }
             );
-
         }, 
-        undefined, // Función de progreso (opcional)
+        undefined, 
         function (error) {
             console.error('Error cargando lampara-encendida.glb:', error);
         }
     );
+}
+
+// --- Lógica de Colocación en AR ---
+
+function onSelect() {
+    // Solo colocamos la lámpara si el retículo es visible (se ha detectado una superficie)
+    if (reticle.visible && lampOnModel && lampOffModel) {
+        
+        // Si ya hay una lámpara colocada, la removemos (para permitir moverla/recolocarla)
+        if (placedLampModel) {
+            scene.remove(placedLampModel);
+        }
+        
+        // Creamos la nueva lámpara con el estado actual
+        placedLampModel = getLampModel(isLampOn);
+        
+        // La colocamos en la posición del retículo
+        placedLampModel.position.setFromMatrixPosition(reticle.matrix);
+        
+        scene.add(placedLampModel);
+    }
 }
 
 
@@ -168,14 +230,39 @@ function animate() {
     renderer.setAnimationLoop(render);
 }
 
-function render() {
-    // Si la sesión de RA está activa, el renderer.xr maneja el renderizado
-    if (renderer.xr.isPresenting) {
-        renderer.render(scene, camera);
-    } else {
-        // Renderizado normal (escritorio/móvil sin RA)
-        composer.render();
+function render(timestamp, frame) {
+    if (frame) {
+        const referenceSpace = renderer.xr.getReferenceSpace();
+        const session = renderer.xr.getSession();
+
+        if (hitTestSourceRequested === false) {
+            session.requestReferenceSpace('viewer').then(function (referenceSpace) {
+                session.requestHitTestSource({ space: referenceSpace }).then(function (source) {
+                    hitTestSource = source;
+                });
+            });
+            session.addEventListener('end', function () { hitTestSourceRequested = false; hitTestSource = null; });
+            hitTestSourceRequested = true;
+        }
+
+        if (hitTestSource) {
+            const hitTestResults = frame.getHitTestResults(hitTestSource);
+
+            if (hitTestResults.length) {
+                const hit = hitTestResults[0];
+                const pose = frame.getPose(hit.transform, referenceSpace);
+
+                reticle.visible = true;
+                reticle.matrix.fromArray(pose.transform.matrix);
+
+            } else {
+                reticle.visible = false;
+            }
+        }
     }
+    
+    // Renderizado: El renderizador usa la cámara AR si está en sesión, o la cámara normal si no lo está.
+    composer.render();
 }
 
 
@@ -193,5 +280,3 @@ window.onload = function() {
     init();
     animate();
 };
-
-
