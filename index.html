@@ -49,16 +49,13 @@
     <div id="ar-button-container"></div>
     
     <!-- 
-        *** IMPORT MAP: SOLUCIÓN DE MÓDULOS ***
-        Define las rutas de las librerías para que app.js pueda usar 'import'.
+        IMPORT MAP: Define las rutas de las librerías. 
+        Este bloque DEBE ser JSON válido (sin comentarios dentro de las llaves {}).
     -->
     <script type="importmap">
     {
         "imports": {
-            <!-- Ruta para el núcleo de Three.js (versión modular) -->
             "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
-            
-            <!-- Ruta para todos los addons de Three.js (GLTFLoader, ARButton, etc.) -->
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
         }
     }
