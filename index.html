@@ -3,92 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebAR Lámpara 3D</title>
+    <title>Tienda de Lámparas WebAR</title>
+    <!-- Carga de Tailwind CSS CDN (solo para desarrollo) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden; /* Evita barras de desplazamiento */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #000; /* Fondo negro para el modo escritorio */
-            font-family: 'Inter', sans-serif;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        #ui-controls {
-            position: absolute;
-            top: 20px;
-            display: flex;
-            gap: 1rem;
-            z-index: 10;
-        }
-        .control-button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        #switch-button {
-            background-color: #fcd34d; /* Amarillo suave */
-            color: #1f2937; /* Gris oscuro */
-        }
-        #switch-button:hover {
-            background-color: #f59e0b;
-        }
-        
-        /* Contenedor del Botón AR/VR (importante para el fix de seguridad) */
-        #ar-button-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-        
-        /* Estilos específicos para el botón AR creado por Three.js */
-        #ar-button-container button {
-            background-color: #3b82f6; /* Azul */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        #ar-button-container button.xr-unsupported {
-            background-color: #ef4444 !important; /* Rojo si no es compatible */
-            cursor: not-allowed;
-        }
-    </style>
-    <!-- Módulos de Three.js -->
+    <!-- Import Map para Módulos ES6 y Three.js Addons -->
     <script type="importmap">
         {
             "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
+                "three": "./js/three.module.js",
+                "three/addons/loaders/GLTFLoader.js": "./js/GLTFLoader.js",
+                "three/addons/webxr/ARButton.js": "./js/ARButton.js",
+                "three/addons/postprocessing/EffectComposer.js": "./js/EffectComposer.js",
+                "three/addons/postprocessing/RenderPass.js": "./js/RenderPass.js",
+                "three/addons/postprocessing/UnrealBloomPass.js": "./js/UnrealBloomPass.js"
             }
         }
     </script>
+    <style>
+        /* Estilos generales para asegurar que el canvas cubra toda la pantalla */
+        body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background-color: #0d1117; }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* Estilo para el contenedor del botón de AR, es crítico que esté en la capa superior */
+        #ar-button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Asegurarse de que esté en la capa superior */
+        }
+        
+        /* Estilo para el botón de control de la lámpara (encendido/apagado) */
+        #switch-button {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
-    <div id="ui-controls">
-        <button id="switch-button" class="control-button">Apagar Lámpara</button>
-    </div>
 
-    <div id="ar-button-container">
-        <!-- El botón AR se insertará aquí mediante app.js -->
-    </div>
-
+    <!-- Botón de Control (Encender/Apagar Lámpara) -->
+    <button id="switch-button" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-lg shadow-lg transition duration-150 ease-in-out">
+        Encender Lámpara
+    </button>
+    
+    <!-- Contenedor donde Three.js insertará el botón "START AR" -->
+    <div id="ar-button-container"></div>
+    
+    <!-- La aplicación principal se carga aquí -->
     <script type="module" src="app.js"></script>
+    
 </body>
 </html>
