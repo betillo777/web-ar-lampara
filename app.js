@@ -13,7 +13,6 @@ let isLampOn = true;
 let currentLampModel = null;
 let lampOnModel = null;
 let lampOffModel = null;
-let arButtonContainer;
 
 // Archivos de modelos 3D
 const MODEL_PATH_OFF = 'assets/lampara-apagada.glb';
@@ -21,12 +20,14 @@ const MODEL_PATH_ON = 'assets/lampara-encendida.glb';
 
 // --- Funciones de Utilidad para manejo de modelos ---
 
+/** Clona el modelo 3D y lo añade a la escena, manejando el estado de encendido/apagado. */
 function switchLampModel(turnOn) {
     if (currentLampModel) {
         scene.remove(currentLampModel);
     }
 
     if (turnOn) {
+        // Usar .clone() asegura que no modificamos el original
         currentLampModel = lampOnModel.clone();
         document.getElementById('switch-button').textContent = "Apagar Lámpara";
         spotLight.intensity = 1.0; // Enciende la luz
@@ -40,8 +41,9 @@ function switchLampModel(turnOn) {
 
     // Importante: Añadir el modelo CLONADO a la escena
     if (currentLampModel) {
-        currentLampModel.position.set(0, 0, -1); // Posiciona la lámpara
-        currentLampModel.scale.set(0.1, 0.1, 0.1); // Ajusta la escala si es necesario
+        // AJUSTE DE POSICIÓN Y ESCALA: Bajamos y alejamos para que la lámpara se vea bien centrada.
+        currentLampModel.position.set(0, -0.5, -3); 
+        currentLampModel.scale.set(0.2, 0.2, 0.2); // Escala ajustada para una mejor visualización inicial
         scene.add(currentLampModel);
     }
 
@@ -58,7 +60,9 @@ function toggleLight() {
 function init() {
     // 1. Configuración de la Escena y Renderizador
     scene = new THREE.Scene();
+    // AJUSTE DE CÁMARA: Alejamos la cámara a posición (0, 0, 5) para ver la lámpara completa
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+    camera.position.set(0, 0, 5); 
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -81,8 +85,9 @@ function init() {
     scene.add(spotLight);
     scene.add(spotLight.target);
 
-    // Luz ambiental para que se vea la silueta
-    lightSource = new THREE.AmbientLight(0xffffff, 0.5); 
+    // AJUSTE DE LUZ AMBIENTAL: Aumentamos la intensidad a 2.0 para que se vea la geometría
+    // y los materiales, incluso cuando la luz principal esté apagada.
+    lightSource = new THREE.AmbientLight(0xffffff, 2.0); 
     scene.add(lightSource);
 
     // 3. Post-procesamiento para Bloom (Efecto de Brillo)
@@ -110,8 +115,10 @@ function init() {
     // 5. Configurar Botones y Controles
     document.getElementById('switch-button').addEventListener('click', toggleLight);
     
-    arButtonContainer = document.getElementById('ar-button-container');
-    document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] }));
+    // FIX DE SEGURIDAD RA: Añadir el botón AR directamente al contenedor predefinido 
+    // en lugar de al body, para evitar el conflicto de superposición de Android/iOS.
+    const arButton = ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] });
+    document.getElementById('ar-button-container').appendChild(arButton);
 
     window.addEventListener('resize', onWindowResize);
 }
@@ -124,18 +131,19 @@ function loadModels() {
     loader.load(
         MODEL_PATH_ON, 
         function (gltf) {
-            lampOnModel = gltf.scene;
+            // Guardamos la escena completa del GLTF
+            lampOnModel = gltf.scene; 
             console.log("Modelo 'Encendida' cargado correctamente.");
 
             // Cargar modelo APAGADO después de que el primero termine
             loader.load(
                 MODEL_PATH_OFF, 
                 function (gltf) {
+                    // Guardamos la escena completa del GLTF
                     lampOffModel = gltf.scene;
                     console.log("Modelo 'Apagada' cargado correctamente.");
 
                     // Una vez que ambos modelos están cargados, inicializar la escena
-                    // con el modelo inicial (encendido por defecto)
                     switchLampModel(isLampOn);
 
                 }, 
@@ -165,7 +173,7 @@ function render() {
     if (renderer.xr.isPresenting) {
         renderer.render(scene, camera);
     } else {
-        // Renderizado normal (escritorio)
+        // Renderizado normal (escritorio/móvil sin RA)
         composer.render();
     }
 }
@@ -185,3 +193,5 @@ window.onload = function() {
     init();
     animate();
 };
+
+
