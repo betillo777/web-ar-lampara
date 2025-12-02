@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Visualizador AR de Lámparas</title> 
+    <link rel="stylesheet" href="styles.css"> 
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script> 
+</head> 
+<body> 
+    <header> 
+        <h1>Visualizador AR de Lámparas</h1> 
+        <p>Visualiza modelos 3D de lámparas en Realidad Aumentada</p> 
+    </header> 
+    <main> 
+        <div class="model-container"> 
+            <model-viewer id="model-viewer" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" shadow-softness="1" exposure="1" environment-image="neutral" auto-rotate camera-controls></model-viewer> 
+        </div> 
+        <div class="controls"> 
+            <div class="model-selector"> 
+                <h2>Modelos disponibles</h2> 
+                <div id="model-list" class="model-list"></div> 
+            </div> 
+            <div class="ar-instructions"> 
+                <h3>¿Cómo usar la Realidad Aumentada?</h3> 
+                <ol> 
+                    <li>Haz clic en el botón de AR en la esquina inferior derecha</li> 
+                    <li>Escanéa una superficie plana</li> 
+                    <li>Coloca el modelo en el espacio</li> 
+                </ol> 
+            </div> 
+        </div> 
+    </main> 
+    <footer> 
+        <p>© 2025 Visualizador AR de Lámparas</p> 
+    </footer> 
+    <script src="script.js"></script> 
+</body> 
+</html> 
