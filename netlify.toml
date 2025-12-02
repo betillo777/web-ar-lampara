@@ -21,4 +21,4 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "same-origin"
-    Content-Security-Policy = "default-src 'self' https://ajax.googleapis.com https://modelviewer.dev; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com https://modelviewer.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://modelviewer.dev;"
+    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://modelviewer.dev https://unpkg.com; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; connect-src 'self' https: blob: data: https://modelviewer.dev https://*.googleapis.com; media-src 'self' https: blob:; font-src 'self' https: data:; frame-src 'self' https: blob:; worker-src 'self' blob:;"
