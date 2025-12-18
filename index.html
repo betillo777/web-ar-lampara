@@ -1,53 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
 
-    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-    
-    
-    
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Visualizador de Lámparas en RA</title>
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+
+    <script src="config.js"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <script src="script.js" defer></script>
+    
+    <title>Visualizador de Lámparas en RA</title>
+    
+    <!-- Cargar config.js primero -->
+    <script src="config.js"></script>
+    <!-- Luego cargar model-viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
+
+
 <body>
     <div class="app-header">
         <h1>Lamparas Energain</h1>
     </div>
     <div class="container">
         <div class="model-container">
-            <model-viewer 
-                id="model-viewer" 
-                camera-controls 
-                touch-action="pan-x pan-y" 
-                interaction-prompt="click" 
-                interaction-prompt-style="wiggle" 
-                shadow-intensity="1.5"
-                ar 
-                ar-modes="webxr scene-viewer quick-look" 
-                ar-placement="wall" 
-                ar-scale="fixed" 
-                ar-tap-to-place 
-                ar-status="not-presenting" 
-                auto-rotate 
-                environment-image="neutral"
-                exposure="1.0"
-                tone-mapping="pbr"
-                shadow-softness="1"
-                camera-orbit="0deg 75deg 2.5m" 
-                field-of-view="45deg" 
-                min-camera-orbit="auto auto 0.5m" 
-                max-camera-orbit="auto 180deg 4m" 
-                min-field-of-view="30deg" 
-                max-field-of-view="65deg"
-                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0;">
-                <div class="progress-bar hide" slot="progress-bar">
-                    <div class="update-bar"></div>
-                </div>
-            </model-viewer>
+           <model-viewer 
+    id="model-viewer" 
+    camera-controls 
+    touch-action="pan-x pan-y" 
+    interaction-prompt="click" 
+    interaction-prompt-style="wiggle" 
+    shadow-intensity="1.5"
+    ar 
+    ar-modes="webxr scene-viewer quick-look" 
+    ar-placement="wall" 
+    ar-scale="fixed" 
+    ar-tap-to-place 
+    ar-status="not-presenting" 
+    auto-rotate 
+    environment-image="neutral"
+    exposure="1.0"
+    tone-mapping="pbr"
+    shadow-softness="1"
+    camera-orbit="0deg 75deg 2.5m" 
+    field-of-view="45deg" 
+    min-camera-orbit="auto auto 0.5m" 
+    max-camera-orbit="auto 180deg 4m" 
+    min-field-of-view="30deg" 
+    max-field-of-view="65deg"
+    style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block;">
+    <div class="progress-bar hide" slot="progress-bar">
+        <div class="update-bar"></div>
+    </div>
+</model-viewer>
             <div id="loading-overlay">
                 <div class="spinner"></div>
                 <p>Cargando modelo...</p>
