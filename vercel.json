@@ -2,16 +2,25 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*.@(html|js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json)",
+      "src": "**/*.@(html|js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json|wasm|bin|mp4|webm|mp3|wav|ogg|m4a|aac|eot|otf|ttc|woff|woff2|mp4|webm|ogv|hdr|exr|ktx2|draco|hdr|tif|tiff|bmp|ico|pdf)",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json))$",
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json|wasm|bin))$",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "Service-Worker-Allowed": "/"
+      }
+    },
+    {
+      "src": "/sw.js",
+      "headers": {
+        "Cache-Control": "no-cache",
+        "Service-Worker-Allowed": "/"
       }
     },
     {
@@ -20,10 +29,17 @@
       "headers": {
         "Cross-Origin-Embedder-Policy": "require-corp",
         "Cross-Origin-Opener-Policy": "same-origin",
-        "Cross-Origin-Resource-Policy": "cross-origin"
+        "Cross-Origin-Resource-Policy": "cross-origin",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=*, microphone=*, xr-spatial-tracking=()",
+        "Content-Security-Policy": "default-src 'self' data: https: 'unsafe-inline' 'unsafe-eval' https://*.googleapis.com https://*.gstatic.com; img-src 'self' data: https:; media-src 'self' data: https:; connect-src 'self' https:;"
       }
     }
   ]
 }
+
 
 
