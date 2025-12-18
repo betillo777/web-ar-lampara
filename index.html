@@ -1,39 +1,75 @@
-<!DOCTYPE html> 
-<html lang="es"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Visualizador AR de Lámparas</title> 
-    <link rel="stylesheet" href="styles.css"> 
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script> 
-</head> 
-<body> 
-    <header> 
-        <h1>Visualizador AR de Lámparas</h1> 
-        <p>Visualiza modelos 3D de lámparas en Realidad Aumentada</p> 
-    </header> 
-    <main> 
-        <div class="model-container"> 
-            <model-viewer id="model-viewer" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" shadow-softness="1" exposure="1" environment-image="neutral" auto-rotate camera-controls></model-viewer> 
-        </div> 
-        <div class="controls"> 
-            <div class="model-selector"> 
-                <h2>Modelos disponibles</h2> 
-                <div id="model-list" class="model-list"></div> 
-            </div> 
-            <div class="ar-instructions"> 
-                <h3>¿Cómo usar la Realidad Aumentada?</h3> 
-                <ol> 
-                    <li>Haz clic en el botón de AR en la esquina inferior derecha</li> 
-                    <li>Escanéa una superficie plana</li> 
-                    <li>Coloca el modelo en el espacio</li> 
-                </ol> 
-            </div> 
-        </div> 
-    </main> 
-    <footer> 
-        <p>© 2025 Visualizador AR de Lámparas</p> 
-    </footer> 
-    <script src="script.js"></script> 
-</body> 
-</html> 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Visualizador de Lámparas en RA</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-header">
+        <h1>Lamparas Energain</h1>
+    </div>
+    <div class="container">
+        <div class="model-container">
+            <model-viewer 
+                id="model-viewer" 
+                camera-controls 
+                touch-action="pan-x pan-y" 
+                interaction-prompt="click" 
+                interaction-prompt-style="wiggle" 
+                shadow-intensity="1.5"
+                ar 
+                ar-modes="webxr scene-viewer quick-look" 
+                ar-placement="wall" 
+                ar-scale="fixed" 
+                ar-tap-to-place 
+                ar-status="not-presenting" 
+                auto-rotate 
+                environment-image="neutral"
+                exposure="1.0"
+                tone-mapping="pbr"
+                shadow-softness="1"
+                camera-orbit="0deg 75deg 2.5m" 
+                field-of-view="45deg" 
+                min-camera-orbit="auto auto 0.5m" 
+                max-camera-orbit="auto 180deg 4m" 
+                min-field-of-view="30deg" 
+                max-field-of-view="65deg"
+                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0;">
+                <div class="progress-bar hide" slot="progress-bar">
+                    <div class="update-bar"></div>
+                </div>
+            </model-viewer>
+            <div id="loading-overlay">
+                <div class="spinner"></div>
+                <p>Cargando modelo...</p>
+            </div>
+            <div id="error-message" class="error-message"></div>
+        </div>
+        <div class="controls">
+            <button id="power-button" class="button" disabled>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
+                </svg>
+                <span class="button-text">Encender</span>
+            </button>
+            <button id="ar-button" class="button ar-button mobile-only" aria-label="Abrir en Realidad Aumentada">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-8c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5-5 2.24-5 5zm5-3c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3z"/>
+                </svg>
+                <span class="button-text">Ver en RA</span>
+            </button>
+        </div>
+        <div class="thumbnails" id="thumbnails-container">
+            <!-- Las miniaturas se generarán dinámicamente con JavaScript -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
