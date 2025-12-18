@@ -2,13 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*.@(html|js|css|png|jpg|jpeg|gif|glb|gltf)",
+      "src": "**/*.@(html|js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json)",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|glb|gltf))$",
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|glb|gltf|webp|svg|woff|woff2|ttf|eot|json))$",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable",
         "Access-Control-Allow-Origin": "*"
@@ -25,3 +25,5 @@
     }
   ]
 }
+
+
