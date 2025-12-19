@@ -23,18 +23,14 @@ const CONFIG = window.APP_CONFIG || {
 
 
 
-
-
-
-
 // Lista de modelos con ajustes específicos para cada uno
 const modelos = [
     {
         id: 'bayuda',
         nombre: 'Lámpara Bayuda',
-        preview: './assets/previews/bayuda.png',
-        modelo: './modelos/bayudaRA.glb',
-        modeloEncendido: './modelos/bayudaRA-LED.glb',
+        preview: '/assets/previews/bayuda.png',
+        modelo: '/modelos/bayudaRA.glb',
+        modeloEncendido: '/modelos/bayudaRA-LED.glb',
         tipo: 'Pared',
         escala: '1 1 1',
         posicion: '0 0 0',
@@ -47,9 +43,9 @@ const modelos = [
     {
         id: 'cairo',
         nombre: 'Lámpara Cairo',
-        preview: './assets/previews/cairo.png',
-        modelo: './modelos/cairoRA.glb',
-        modeloEncendido: './modelos/cairoRA-LED.glb',
+        preview: '/assets/previews/cairo.png',
+        modelo: '/modelos/cairoRA.glb',
+        modeloEncendido: '/modelos/cairoRA-LED.glb',
         tipo: 'Pared',
         escala: '1 1 1',
         posicion: '0 0 0',
@@ -62,9 +58,9 @@ const modelos = [
     {
         id: 'clastra',
         nombre: 'Lámpara Clastra',
-        preview: './assets/previews/clastra.png',
-        modelo: './modelos/clastraRA.glb',
-        modeloEncendido: './modelos/clastraRA-LED.glb',
+        preview: '/assets/previews/clastra.png',
+        modelo: '/modelos/clastraRA.glb',
+        modeloEncendido: '/modelos/clastraRA-LED.glb',
         tipo: 'Pared',
         escala: '0.9 0.9 0.9',
         posicion: '0 0 0',
@@ -77,9 +73,9 @@ const modelos = [
     {
         id: 'drum',
         nombre: 'Lámpara Drum',
-        preview: './assets/previews/drum.png',
-        modelo: './modelos/drumRA.glb',
-        modeloEncendido: './modelos/drumRA-LED.glb',
+        preview: '/assets/previews/drum.png',
+        modelo: '/modelos/drumRA.glb',
+        modeloEncendido: '/modelos/drumRA-LED.glb',
         tipo: 'Techo',
         escala: '1.1 1.1 1.1',
         posicion: '0 0.5 0',
@@ -92,9 +88,9 @@ const modelos = [
     {
         id: 'ep1w',
         nombre: 'Lámpara EP1W',
-        preview: './assets/previews/ep1w.png',
-        modelo: './modelos/ep1wRA.glb',
-        modeloEncendido: './modelos/ep1wRA-LED.glb',
+        preview: '/assets/previews/ep1w.png',
+        modelo: '/modelos/ep1wRA.glb',
+        modeloEncendido: '/modelos/ep1wRA-LED.glb',
         tipo: 'Piso',
         escala: '1 1 1',
         posicion: '0 -0.3 0',
@@ -104,13 +100,12 @@ const modelos = [
         maxCameraOrbit: 'auto 80deg 3m',
         fieldOfView: '50deg'
     },
-
     {
         id: 'lcp5w',
         nombre: 'Lámpara LCP5W',
-        preview: './assets/previews/lcp5w.png',
-        modelo: './modelos/lcp5wRA.glb',
-        modeloEncendido: './modelos/lcp5wRA-LED.glb',
+        preview: '/assets/previews/lcp5w.png',
+        modelo: '/modelos/lcp5wRA.glb',
+        modeloEncendido: '/modelos/lcp5wRA-LED.glb',
         tipo: 'Pared',
         escala: '0.9 0.9 0.9',
         posicion: '0 0 0',
@@ -123,9 +118,9 @@ const modelos = [
     {
         id: 'milan',
         nombre: 'Lámpara Milán',
-        preview: './assets/previews/milan.png',
-        modelo: './modelos/milanRA.glb',
-        modeloEncendido: './modelos/milanRA-LED.glb',
+        preview: '/assets/previews/milan.png',
+        modelo: '/modelos/milanRA.glb',
+        modeloEncendido: '/modelos/milanRA-LED.glb',
         tipo: 'Pared',
         escala: '1 1 1',
         posicion: '0 0 0',
@@ -138,9 +133,9 @@ const modelos = [
     {
         id: 'miranda',
         nombre: 'Lámpara Miranda',
-        preview: './assets/previews/miranda.png',
-        modelo: './modelos/mirandaRA.glb',
-        modeloEncendido: './modelos/mirandaRA-LED.glb',
+        preview: '/assets/previews/miranda.png',
+        modelo: '/modelos/mirandaRA.glb',
+        modeloEncendido: '/modelos/mirandaRA-LED.glb',
         tipo: 'Techo',
         escala: '1.1 1.1 1.1',
         posicion: '0 0.5 0',
@@ -153,9 +148,9 @@ const modelos = [
     {
         id: 'monaco',
         nombre: 'Lámpara Mónaco',
-        preview: './assets/previews/monaco.png',
-        modelo: './modelos/monacoRA.glb',
-        modeloEncendido: './modelos/monacoRA-LED.glb',
+        preview: '/assets/previews/monaco.png',
+        modelo: '/modelos/monacoRA.glb',
+        modeloEncendido: '/modelos/monacoRA-LED.glb',
         tipo: 'Pared',
         escala: '0.95 0.95 0.95',
         posicion: '0 0 0',
@@ -168,9 +163,9 @@ const modelos = [
     {
         id: 'olimpo',
         nombre: 'Lámpara Olimpo',
-        preview: './assets/previews/olimpo.png',
-        modelo: './modelos/olimpoRA.glb',
-        modeloEncendido: './modelos/olimpoRA-LED.glb',
+        preview: '/assets/previews/olimpo.png',
+        modelo: '/modelos/olimpoRA.glb',
+        modeloEncendido: '/modelos/olimpoRA-LED.glb',
         tipo: 'Techo',
         escala: '1.2 1.2 1.2',
         posicion: '0 0.6 0',
@@ -183,9 +178,9 @@ const modelos = [
     {
         id: 'riley',
         nombre: 'Lámpara Riley',
-        preview: './assets/previews/riley.png',
-        modelo: './modelos/rileyRA.glb',
-        modeloEncendido: './modelos/rileyRA-LED.glb',
+        preview: '/assets/previews/riley.png',
+        modelo: '/modelos/rileyRA.glb',
+        modeloEncendido: '/modelos/rileyRA-LED.glb',
         tipo: 'Techo',
         escala: '0.9 0.9 0.9',
         posicion: '0 0.5 0',
@@ -198,9 +193,9 @@ const modelos = [
     {
         id: 'tiko',
         nombre: 'Lámpara Tiko',
-        preview: './assets/previews/tiko.png',
-        modelo: './modelos/tikoRA.glb',
-        modeloEncendido: './modelos/tikoRA-LED.glb',
+        preview: '/assets/previews/tiko.png',
+        modelo: '/modelos/tikoRA.glb',
+        modeloEncendido: '/modelos/tikoRA-LED.glb',
         tipo: 'Techo',
         escala: '1 1 1',
         posicion: '0 0.5 0',
@@ -213,9 +208,9 @@ const modelos = [
     {
         id: 'viena',
         nombre: 'Lámpara Viena',
-        preview: './assets/previews/viena.png',
-        modelo: './modelos/vienaRA.glb',
-        modeloEncendido: './modelos/vienaRA-LED.glb',
+        preview: '/assets/previews/viena.png',
+        modelo: '/modelos/vienaRA.glb',
+        modeloEncendido: '/modelos/vienaRA-LED.glb',
         tipo: 'Pared',
         escala: '0.9 0.9 0.9',
         posicion: '0 -0.1 0',
@@ -228,9 +223,9 @@ const modelos = [
     {
         id: 'viena2',
         nombre: 'Lámpara Viena 2',
-        preview: './assets/previews/viena2.png',
-        modelo: './modelos/viena2RA.glb',
-        modeloEncendido: './modelos/viena2RA-LED.glb',
+        preview: '/assets/previews/viena2.png',
+        modelo: '/modelos/viena2RA.glb',
+        modeloEncendido: '/modelos/viena2RA-LED.glb',
         tipo: 'Techo',
         escala: '1 1 1',
         posicion: '0 0.6 0',
@@ -241,8 +236,6 @@ const modelos = [
         fieldOfView: '55deg'
     }
 ];
-
-
 
 
 

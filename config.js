@@ -5,10 +5,10 @@ const isLocal = window.location.hostname === 'localhost' ||
 window.APP_CONFIG = {
     DEBUG_PREFIX: '[Lámparas 3D]',
     DEBOUNCE_DELAY: 100,
-    BASE_URL: isLocal ? '' : 'https://raw.githubusercontent.com/betillo777/web-ar-lampara/main',
+    BASE_URL: isLocal ? '' : '', // Deja vacío para rutas relativas en hosting
     PATHS: {
-        models: 'modelos',
-        images: 'assets/previews'
+        models: 'modelos',       // Ruta a la carpeta de modelos
+        images: 'assets/previews' // Ruta a las miniaturas
     },
     AR_BUTTON_TEXT: {
         start: 'Ver en RA',
