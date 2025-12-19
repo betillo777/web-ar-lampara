@@ -6,10 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-<<<<<<< HEAD
-=======
     
->>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
     <title>Visualizador de Lámparas en RA</title>
     
     <!-- Preconexión a recursos externos -->
@@ -19,10 +16,7 @@
     <!-- Hojas de estilo -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<<<<<<< HEAD
-=======
 
->>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
 <body>
     <div class="app-header">
         <h1>Lamparas Energain</h1>
@@ -38,13 +32,8 @@
                 shadow-intensity="1.5"
                 ar 
                 ar-modes="webxr scene-viewer quick-look" 
-<<<<<<< HEAD
                 ar-placement="floor"
                 ar-scale="fixed"
-=======
-                ar-placement="floor"  <!-- Cambiado de "wall" a "floor" -->
-                ar-scale="auto"       <!-- Cambiado de "fixed" a "auto" -->
->>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
                 ar-tap-to-place 
                 ar-status="not-presenting" 
                 auto-rotate 
@@ -58,14 +47,7 @@
                 max-camera-orbit="auto 180deg 4m" 
                 min-field-of-view="30deg" 
                 max-field-of-view="65deg"
-<<<<<<< HEAD
                 style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block;">
-                <div class="progress-bar hide" slot="progress-bar">
-                    <div class="update-bar"></div>
-                </div>
-            </model-viewer>
-=======
-                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block; --ar-button-horizontal-position: 50%; --ar-button-vertical-position: 20px;">
                 
                 <div class="progress-bar hide" slot="progress-bar">
                     <div class="update-bar"></div>
@@ -75,7 +57,6 @@
                 </button>
             </model-viewer>
             
->>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
             <div id="loading-overlay">
                 <div class="spinner"></div>
                 <p>Cargando modelo...</p>
@@ -91,13 +72,6 @@
                 <span class="button-text">Encender</span>
             </button>
         </div>
-<<<<<<< HEAD
-=======
-        
-        <div class="thumbnails" id="thumbnails-container">
-            <!-- Las miniaturas se generarán dinámicamente con JavaScript -->
-        </div>
->>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
     </div>
 
     <!-- Scripts (sin defer para mejor control de carga) -->
@@ -106,6 +80,5 @@
     <script src="script.js"></script>
 </body>
 </html>
-
 
 
