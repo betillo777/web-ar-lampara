@@ -1,6 +1,7 @@
 
 // Configuración global
-const CONFIG = {
+const CONFIG = window.APP_CONFIG || {
+    // Configuración por defecto (solo como respaldo)
     DEBUG_PREFIX: '[Lámparas 3D]',
     DEBOUNCE_DELAY: 100,
     AR_BUTTON_TEXT: {
