@@ -3,17 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
     <title>Visualizador de Lámparas en RA</title>
     
-    <!-- Cargar config.js primero -->
-    <script src="config.js"></script>
-    <!-- Luego cargar model-viewer -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <!-- Preconexión a recursos externos -->
+    <link rel="preconnect" href="https://ajax.googleapis.com">
+    <link rel="preconnect" href="https://raw.githubusercontent.com">
     
+    <!-- Hojas de estilo -->
     <link rel="stylesheet" href="styles.css">
 </head>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
 <body>
     <div class="app-header">
         <h1>Lamparas Energain</h1>
@@ -29,8 +38,13 @@
                 shadow-intensity="1.5"
                 ar 
                 ar-modes="webxr scene-viewer quick-look" 
+<<<<<<< HEAD
                 ar-placement="floor"
                 ar-scale="fixed"
+=======
+                ar-placement="floor"  <!-- Cambiado de "wall" a "floor" -->
+                ar-scale="auto"       <!-- Cambiado de "fixed" a "auto" -->
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
                 ar-tap-to-place 
                 ar-status="not-presenting" 
                 auto-rotate 
@@ -44,17 +58,31 @@
                 max-camera-orbit="auto 180deg 4m" 
                 min-field-of-view="30deg" 
                 max-field-of-view="65deg"
+<<<<<<< HEAD
                 style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block;">
                 <div class="progress-bar hide" slot="progress-bar">
                     <div class="update-bar"></div>
                 </div>
             </model-viewer>
+=======
+                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block; --ar-button-horizontal-position: 50%; --ar-button-vertical-position: 20px;">
+                
+                <div class="progress-bar hide" slot="progress-bar">
+                    <div class="update-bar"></div>
+                </div>
+                <button slot="ar-button" id="ar-button" class="ar-button">
+                    Ver en Realidad Aumentada
+                </button>
+            </model-viewer>
+            
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
             <div id="loading-overlay">
                 <div class="spinner"></div>
                 <p>Cargando modelo...</p>
             </div>
             <div id="error-message" class="error-message"></div>
         </div>
+        
         <div class="controls">
             <button id="power-button" class="button" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -62,14 +90,19 @@
                 </svg>
                 <span class="button-text">Encender</span>
             </button>
-            <button id="ar-button" class="button ar-button mobile-only" aria-label="Abrir en Realidad Aumentada">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-8c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5-5 2.24-5 5zm5-3c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3z"/>
-                </svg>
-                <span class="button-text">Ver en RA</span>
-            </button>
         </div>
+<<<<<<< HEAD
+=======
+        
+        <div class="thumbnails" id="thumbnails-container">
+            <!-- Las miniaturas se generarán dinámicamente con JavaScript -->
+        </div>
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
     </div>
+
+    <!-- Scripts (sin defer para mejor control de carga) -->
+    <script src="config.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

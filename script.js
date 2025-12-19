@@ -1,7 +1,6 @@
-
+// script.js - Versión optimizada
 // Configuración global
 const CONFIG = window.APP_CONFIG || {
-    // Configuración por defecto (solo como respaldo)
     DEBUG_PREFIX: '[Lámparas 3D]',
     DEBOUNCE_DELAY: 100,
     AR_BUTTON_TEXT: {
@@ -13,13 +12,10 @@ const CONFIG = window.APP_CONFIG || {
         off: 'Encender'
     }
 };
-
-
-
-
-
-
-
+// Depuración
+if (CONFIG.DEBUG) {
+    console.log(`${CONFIG.DEBUG_PREFIX} Configuración cargada:`, CONFIG);
+}
 
 
 
@@ -258,6 +254,10 @@ const modelos = [
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03f1c4d79cd8011848294e5599b82049bf330c47
 // Elementos del DOM
 const DOM = {
     modelViewer: null,
@@ -273,6 +273,10 @@ const DOM = {
         return this;
     }
 };
+
+
+
+
 // Estado de la aplicación
 const AppState = {
     currentModel: null,
