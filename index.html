@@ -30,8 +30,8 @@
                 shadow-intensity="1.5"
                 ar 
                 ar-modes="webxr scene-viewer quick-look" 
-                ar-placement="wall" 
-                ar-scale="fixed" 
+                ar-placement="floor"
+                ar-scale="auto"
                 ar-tap-to-place 
                 ar-status="not-presenting" 
                 auto-rotate 
@@ -45,7 +45,7 @@
                 max-camera-orbit="auto 180deg 4m" 
                 min-field-of-view="30deg" 
                 max-field-of-view="65deg"
-                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0;">
+                style="--poster-color: transparent; --progress-bar-color: #ff9800; --environment-opacity: 0; --ar-button-display: block;">
                 <div class="progress-bar hide" slot="progress-bar">
                     <div class="update-bar"></div>
                 </div>
@@ -77,6 +77,5 @@
     <script src="script.js"></script>
 </body>
 </html>
-
 
 
