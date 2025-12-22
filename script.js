@@ -109,21 +109,6 @@ const modelos = [
         fieldOfView: '50deg'
     },
     {
-        id: 'milan',
-        nombre: 'Lámpara Milán',
-        preview: './assets/previews/milan.png',
-        modelo: './modelos/milanRA.glb',
-        modeloEncendido: './modelos/milanRA-LED.glb',
-        tipo: 'Pared',
-        escala: '1 1 1',
-        posicion: '0 0 0',
-        cameraOrbit: '0deg 70deg 1.8m',
-        cameraTarget: '0m 0.3m 0m',
-        minCameraOrbit: 'auto 30deg 0.5m',
-        maxCameraOrbit: 'auto 90deg 3m',
-        fieldOfView: '50deg'
-    },
-    {
         id: 'miranda',
         nombre: 'Lámpara Miranda',
         preview: './assets/previews/miranda.png',
