@@ -337,8 +337,8 @@ const ModelController = {
             this.pointLight = null;
         }
         
-        // Solo agregar luz si la lámpara está encendida
-        if (AppState.isPowerOn) {
+        // Solo agregar luz si la lámpara está encendida y NO estamos en AR
+        if (AppState.isPowerOn && !AppState.isARSessionActive) {
             // Crear una luz blanca cálida MUY intensa (RGB: 255, 220, 160)
             const light = new THREE.PointLight(0xffdca0, 8.0, 6, 1.2);
             light.position.set(0, 0.3, 0);
@@ -491,12 +491,26 @@ const ModelController = {
                     if (!model || !model.materials) return;
                     
                     model.materials.forEach(material => {
-                        if (material.emissiveFactor) {
-                            // Aumentar intensidad de emisión al máximo
-                            material.emissiveFactor = [1.0, 1.0, 1.0]; // Valores máximos
-                            material.emissiveStrength = 10.0; // Aumentado de 5.0 a 10.0
-                            material.roughnessFactor = 0.2;   // Reducido para reflejos más intensos
-                            material.metallicFactor = 0.7;    // Aumentado para más brillo metálico
+                        if (AppState.isPowerOn) {
+                            if (AppState.isARSessionActive) {
+                                // Configuración agresiva para AR - máxima emisión
+                                material.emissiveFactor = [2.5, 2.2, 1.5]; // RGB muy cálido y brillante
+                                material.emissiveStrength = 20.0; // Máxima emisión posible
+                                material.roughnessFactor = 0.05;  // Casi espejo para máximo brillo
+                                material.metallicFactor = 1.0;    // Máximo metálico
+                            } else {
+                                // Configuración normal para visor 3D
+                                material.emissiveFactor = [1.0, 1.0, 1.0];
+                                material.emissiveStrength = 10.0;
+                                material.roughnessFactor = 0.2;
+                                material.metallicFactor = 0.7;
+                            }
+                        } else {
+                            // Resetear valores cuando está apagado
+                            material.emissiveFactor = [0, 0, 0];
+                            material.emissiveStrength = 0;
+                            material.roughnessFactor = 0.8;
+                            material.metallicFactor = 0.2;
                         }
                     });
                 } catch (err) {
@@ -523,14 +537,25 @@ const ModelController = {
             DOM.modelViewer.cameraOrbit = `${currentOrbit.theta}deg ${currentOrbit.phi}deg ${currentOrbit.radius}m`;
             DOM.modelViewer.cameraTarget = `${target.x}m ${target.y}m ${target.z}m`;
 
-            // Ajustes de renderizado para máxima intensidad
-            DOM.modelViewer.toneMapping = 'pbr';
-            DOM.modelViewer.exposure = 2.5;         // Aumentado al máximo recomendado
-            DOM.modelViewer.shadowIntensity = 1.2;  // Sombras más oscuras para mayor contraste
-            DOM.modelViewer.shadowSoftness = 0.3;   // Sombras más definidas
+            // Ajustes de renderizado diferentes para AR y visor 3D
+            if (AppState.isARSessionActive) {
+                // Configuración máxima para AR
+                DOM.modelViewer.toneMapping = 'pbr';
+                DOM.modelViewer.exposure = 4.0;         // Exposición máxima para AR
+                DOM.modelViewer.shadowIntensity = 0.3;  // Sombras muy suaves en AR
+                DOM.modelViewer.shadowSoftness = 0.8;   // Sombras muy difuminadas
+                DOM.modelViewer.environmentIntensity = 1.8; // Environment más brillante
+            } else {
+                // Configuración normal para visor 3D
+                DOM.modelViewer.toneMapping = 'pbr';
+                DOM.modelViewer.exposure = 2.5;         // Exposición normal
+                DOM.modelViewer.shadowIntensity = 1.2;  // Sombras más oscuras para contraste
+                DOM.modelViewer.shadowSoftness = 0.3;   // Sombras definidas
+                DOM.modelViewer.environmentIntensity = 1.0; // Environment normal
+            }
             
-            // Actualizar la posición de la luz según el modelo actual
-            if (this.pointLight && AppState.currentModel) {
+            // Actualizar la posición de la luz según el modelo actual (solo en visor 3D)
+            if (this.pointLight && AppState.currentModel && !AppState.isARSessionActive) {
                 // Ajustar la posición de la luz según el tipo de lámpara
                 const model = AppState.currentModel;
                 const lightY = model.tipo === 'Techo' ? -0.3 : 0.3;
