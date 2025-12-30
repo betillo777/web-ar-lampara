@@ -323,38 +323,7 @@ const CameraController = {
 const ModelController = {
     isSwitching: false,
     currentLoadId: 0,
-    pointLight: null,
     
-    _updatePointLight() {
-        if (!AppState.currentModel) return;
-        
-        const scene = DOM.modelViewer.scene;
-        if (!scene) return;
-        
-        // Eliminar luz anterior si existe
-        if (this.pointLight) {
-            scene.remove(this.pointLight);
-            this.pointLight = null;
-        }
-        
-        // Solo agregar luz si la lámpara está encendida y NO estamos en AR
-        if (AppState.isPowerOn && !AppState.isARSessionActive) {
-            // Crear una luz blanca cálida MUY intensa (RGB: 255, 220, 160)
-            const light = new THREE.PointLight(0xffdca0, 8.0, 6, 1.2);
-            light.position.set(0, 0.3, 0);
-            light.castShadow = true; // Activar sombras
-            
-            // Añadir la luz a la escena
-            scene.add(light);
-            this.pointLight = light;
-            
-            // Añadir un pequeño helper para visualizar la posición de la luz en modo debug
-            if (process.env.NODE_ENV !== 'production') {
-                const helper = new THREE.PointLightHelper(light, 0.2);
-                scene.add(helper);
-            }
-        }
-    },
     
     async loadModel(modelId) {
         if (this.isSwitching) {
@@ -490,8 +459,8 @@ const ModelController = {
         AppState.isPowerOn = !AppState.isPowerOn;
         Utils.setLoading(true);
         
-        // Actualizar o crear la PointLight
-        this._updatePointLight();
+        // Actualizar o crear la PointLight - ELIMINADO
+        // this._updatePointLight();
         
         try {
             const modelToLoad = AppState.isPowerOn 
@@ -578,25 +547,8 @@ const ModelController = {
                 DOM.modelViewer.environmentIntensity = 1.0; // Environment normal
             }
             
-            // Actualizar la posición de la luz según el modelo actual (solo en visor 3D)
-            if (this.pointLight && AppState.currentModel && !AppState.isARSessionActive) {
-                // Ajustar la posición de la luz según el tipo de lámpara
-                const model = AppState.currentModel;
-                const lightY = model.tipo === 'Techo' ? -0.3 : 0.3;
-                this.pointLight.position.set(0, lightY, 0);
-                
-                // Ajustar intensidad y distancia para brillo MÁXIMO
-                this.pointLight.intensity = 8.0;  // Aumentado a 8.0 (máxima intensidad)
-                this.pointLight.distance = 6;     // Aumentado a 6 (mayor alcance)
-                this.pointLight.decay = 1.2;      // Reducido para máximo alcance
-                
-                // Ajustar parámetros de sombras para mejor calidad
-                if (this.pointLight.shadow) {
-                    this.pointLight.shadow.mapSize.width = 1024;  // Mejor resolución de sombras
-                    this.pointLight.shadow.mapSize.height = 1024; // Mejor resolución de sombras
-                    this.pointLight.shadow.bias = -0.0001;        // Reducir efecto de sombras flotantes
-                }
-            }
+            // Actualizar la posición de la luz según el modelo actual - ELIMINADO
+            // La luz ahora se maneja desde Blender
             
         } catch (error) {
             AppState.isPowerOn = !AppState.isPowerOn; // Revertir el cambio
