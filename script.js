@@ -339,9 +339,10 @@ const ModelController = {
         
         // Solo agregar luz si la lámpara está encendida
         if (AppState.isPowerOn) {
-            // Crear una luz blanca cálida (RGB: 255, 240, 214)
-            const light = new THREE.PointLight(0xfff0d6, 1.5, 3, 2);
+            // Crear una luz blanca cálida más intensa (RGB: 255, 230, 180)
+            const light = new THREE.PointLight(0xffe6b4, 3.0, 4, 1.5);
             light.position.set(0, 0.3, 0); // Ajustar según el modelo
+            light.castShadow = true; // Activar sombras
             
             // Añadir la luz a la escena
             scene.add(light);
@@ -522,10 +523,11 @@ const ModelController = {
             DOM.modelViewer.cameraOrbit = `${currentOrbit.theta}deg ${currentOrbit.phi}deg ${currentOrbit.radius}m`;
             DOM.modelViewer.cameraTarget = `${target.x}m ${target.y}m ${target.z}m`;
 
-            // Aplicar ajustes de renderizado
+            // Aplicar ajustes de renderizado mejorados
             DOM.modelViewer.toneMapping = 'pbr';
-            DOM.modelViewer.exposure = 2.0;
-            DOM.modelViewer.shadowIntensity = 0.8;
+            DOM.modelViewer.exposure = 2.2;  // Aumentado ligeramente para más brillo
+            DOM.modelViewer.shadowIntensity = 1.0;  // Aumentado para sombras más definidas
+            DOM.modelViewer.shadowSoftness = 0.5;   // Suavizado de sombras
             
             // Actualizar la posición de la luz según el modelo actual
             if (this.pointLight && AppState.currentModel) {
@@ -534,10 +536,17 @@ const ModelController = {
                 const lightY = model.tipo === 'Techo' ? -0.3 : 0.3;
                 this.pointLight.position.set(0, lightY, 0);
                 
-                // Ajustar intensidad y distancia
-                this.pointLight.intensity = 1.5;
-                this.pointLight.distance = 3;
-                this.pointLight.decay = 2;
+                // Ajustar intensidad y distancia para mayor brillo
+                this.pointLight.intensity = 3.0; // Aumentado de 1.5 a 3.0
+                this.pointLight.distance = 4;    // Aumentado de 3 a 4
+                this.pointLight.decay = 1.5;     // Reducido para que la luz llegue más lejos
+                
+                // Ajustar parámetros de sombras para mejor calidad
+                if (this.pointLight.shadow) {
+                    this.pointLight.shadow.mapSize.width = 1024;  // Mejor resolución de sombras
+                    this.pointLight.shadow.mapSize.height = 1024; // Mejor resolución de sombras
+                    this.pointLight.shadow.bias = -0.0001;        // Reducir efecto de sombras flotantes
+                }
             }
             
         } catch (error) {
