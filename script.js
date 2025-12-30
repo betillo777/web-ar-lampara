@@ -396,6 +396,28 @@ const ModelController = {
             AppState.currentModel = modelConfig;
             this._updateThumbnails(modelId);
             
+            // Aplicar emisión si está encendido (importante para AR)
+            if (AppState.isPowerOn) {
+                setTimeout(() => {
+                    try {
+                        const model = DOM.modelViewer.model;
+                        if (model && model.materials) {
+                            model.materials.forEach(material => {
+                                if (AppState.isARSessionActive) {
+                                    material.emissiveFactor = [3.0, 2.5, 1.8];
+                                    material.emissiveStrength = 50.0;
+                                    material.roughnessFactor = 0.01;
+                                    material.metallicFactor = 1.0;
+                                    material.needsUpdate = true;
+                                }
+                            });
+                        }
+                    } catch (err) {
+                        Utils.debug('Error aplicando emisión post-carga:', err);
+                    }
+                }, 100);
+            }
+            
             // Preload siguiente modelo probable
             this._preloadNextModel(modelId, AppState.isPowerOn);
             
@@ -493,11 +515,13 @@ const ModelController = {
                     model.materials.forEach(material => {
                         if (AppState.isPowerOn) {
                             if (AppState.isARSessionActive) {
-                                // Configuración agresiva para AR - máxima emisión
-                                material.emissiveFactor = [2.5, 2.2, 1.5]; // RGB muy cálido y brillante
-                                material.emissiveStrength = 20.0; // Máxima emisión posible
-                                material.roughnessFactor = 0.05;  // Casi espejo para máximo brillo
-                                material.metallicFactor = 1.0;    // Máximo metálico
+                                // Configuración EXTREMA para AR - emisión máxima posible
+                                material.emissiveFactor = [3.0, 2.5, 1.8]; // RGB ultra brillante
+                                material.emissiveStrength = 50.0; // EMISIÓN EXTREMA
+                                material.roughnessFactor = 0.01;  // Espejo perfecto
+                                material.metallicFactor = 1.0;    // 100% metálico
+                                // Forzar actualización inmediata
+                                material.needsUpdate = true;
                             } else {
                                 // Configuración normal para visor 3D
                                 material.emissiveFactor = [1.0, 1.0, 1.0];
@@ -539,18 +563,18 @@ const ModelController = {
 
             // Ajustes de renderizado diferentes para AR y visor 3D
             if (AppState.isARSessionActive) {
-                // Configuración máxima para AR
+                // Configuración máxima para AR - SIN SOMBRAS
                 DOM.modelViewer.toneMapping = 'pbr';
-                DOM.modelViewer.exposure = 4.0;         // Exposición máxima para AR
-                DOM.modelViewer.shadowIntensity = 0.3;  // Sombras muy suaves en AR
-                DOM.modelViewer.shadowSoftness = 0.8;   // Sombras muy difuminadas
-                DOM.modelViewer.environmentIntensity = 1.8; // Environment más brillante
+                DOM.modelViewer.exposure = 5.0;         // Exposición máxima para AR
+                DOM.modelViewer.shadowIntensity = 0.0;  // DESACTIVAR sombras en AR
+                DOM.modelViewer.shadowSoftness = 1.0;   // Sombras inexistentes
+                DOM.modelViewer.environmentIntensity = 2.0; // Environment más brillante
             } else {
                 // Configuración normal para visor 3D
                 DOM.modelViewer.toneMapping = 'pbr';
                 DOM.modelViewer.exposure = 2.5;         // Exposición normal
-                DOM.modelViewer.shadowIntensity = 1.2;  // Sombras más oscuras para contraste
-                DOM.modelViewer.shadowSoftness = 0.3;   // Sombras definidas
+                DOM.modelViewer.shadowIntensity = 0.8;  // Sombras más suaves
+                DOM.modelViewer.shadowSoftness = 0.6;   // Sombras más difuminadas
                 DOM.modelViewer.environmentIntensity = 1.0; // Environment normal
             }
             
