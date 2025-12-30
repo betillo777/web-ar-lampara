@@ -323,6 +323,37 @@ const CameraController = {
 const ModelController = {
     isSwitching: false,
     currentLoadId: 0,
+    pointLight: null,
+    
+    _updatePointLight() {
+        if (!AppState.currentModel) return;
+        
+        const scene = DOM.modelViewer.scene;
+        if (!scene) return;
+        
+        // Eliminar luz anterior si existe
+        if (this.pointLight) {
+            scene.remove(this.pointLight);
+            this.pointLight = null;
+        }
+        
+        // Solo agregar luz si la lámpara está encendida
+        if (AppState.isPowerOn) {
+            // Crear una luz blanca cálida (RGB: 255, 240, 214)
+            const light = new THREE.PointLight(0xfff0d6, 1.5, 3, 2);
+            light.position.set(0, 0.3, 0); // Ajustar según el modelo
+            
+            // Añadir la luz a la escena
+            scene.add(light);
+            this.pointLight = light;
+            
+            // Añadir un pequeño helper para visualizar la posición de la luz en modo debug
+            if (process.env.NODE_ENV !== 'production') {
+                const helper = new THREE.PointLightHelper(light, 0.2);
+                scene.add(helper);
+            }
+        }
+    },
     
     async loadModel(modelId) {
         if (this.isSwitching) {
@@ -436,6 +467,9 @@ const ModelController = {
         AppState.isPowerOn = !AppState.isPowerOn;
         Utils.setLoading(true);
         
+        // Actualizar o crear la PointLight
+        this._updatePointLight();
+        
         try {
             const modelToLoad = AppState.isPowerOn 
                 ? AppState.currentModel.modeloEncendido 
@@ -490,8 +524,21 @@ const ModelController = {
 
             // Aplicar ajustes de renderizado
             DOM.modelViewer.toneMapping = 'pbr';
-            DOM.modelViewer.exposure = 2.0;  // Aumentado de 1.3 a 2.0
-            DOM.modelViewer.shadowIntensity = 0.8;  // Aumentar intensidad de sombras
+            DOM.modelViewer.exposure = 2.0;
+            DOM.modelViewer.shadowIntensity = 0.8;
+            
+            // Actualizar la posición de la luz según el modelo actual
+            if (this.pointLight && AppState.currentModel) {
+                // Ajustar la posición de la luz según el tipo de lámpara
+                const model = AppState.currentModel;
+                const lightY = model.tipo === 'Techo' ? -0.3 : 0.3;
+                this.pointLight.position.set(0, lightY, 0);
+                
+                // Ajustar intensidad y distancia
+                this.pointLight.intensity = 1.5;
+                this.pointLight.distance = 3;
+                this.pointLight.decay = 2;
+            }
             
         } catch (error) {
             AppState.isPowerOn = !AppState.isPowerOn; // Revertir el cambio
