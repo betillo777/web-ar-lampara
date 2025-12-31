@@ -10,14 +10,14 @@ const CONFIG = {
         on: 'Apagar',
         off: 'Encender'
     },
-    // Cache para modelos cargados
+    // Cache para modelos cargados - DESACTIVADO para forzar recarga
     MODEL_CACHE: new Map(),
     PRELOAD_FIRST_MODEL: true,
-    MAX_CACHE_SIZE: 5
+    MAX_CACHE_SIZE: 1 // Cache mínimo para forzar recarga
 };
 
-// Versión forzada para romper cache
-const MODEL_VERSION = Date.now();
+// Versión forzada para romper cache - timestamp único cada carga
+const MODEL_VERSION = new Date().getTime() + Math.random();
 
 // Lista de modelos con ajustes específicos para cada uno
 const modelos = [
